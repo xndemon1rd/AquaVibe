@@ -58,6 +58,14 @@ async def auto_end():
                 if not await is_active_chat(chat_id):
                     autoend[chat_id] = {}
                     continue
+                try:
+                    client = await get_client(1)
+                    users = len(await client.get_participants(chat_id))
+                    if users > 1:
+                        autoend[chat_id] = {}
+                        continue
+                except Exception:
+                    continue
                 autoend[chat_id] = {}
                 try:
                     await StreamController.stop_stream(chat_id)
