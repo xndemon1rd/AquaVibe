@@ -15,10 +15,10 @@ PLAY_RESULT_GIF = "https://files.catbox.moe/ge1piy.gif"
 
 from AquaVibe.core.runtime import Apple, Spotify, Telegram, AlternativeMedia, app
 
-# TEMP ROUTING DIAGNOSTIC
+# TEMP PLAYBACK DIAGNOSTIC
 @app.on_message(filters.command("playtest") & ~BANNED_USERS, group=999)
 async def _playtest_handler(client, message):
-    await message.reply_text("✅ PLAY ROUTING WORKS")
+    return await play_command(client, message)
 
 from AquaVibe.core.call import StreamController
 from AquaVibe.utils import seconds_to_min, time_to_seconds
