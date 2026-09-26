@@ -14,7 +14,6 @@ from pyrogram.errors import (
     PhoneNumberInvalid,
     SessionPasswordNeeded,
 )
-from pyrogram.session import StringSession as PyroStringSession
 from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 import config

@@ -19,11 +19,24 @@ from AquaVibe.core.mongo import mongodb
 from AquaVibe.core.runtime import app
 from AquaVibe.utils.admin_filters import admin_filter
 
+def _permissions(**values):
+    """Build ChatPermissions across Pyrogram/Pyrofork variants."""
+    import inspect
+    try:
+        params = inspect.signature(ChatPermissions).parameters
+        allowed = set(params)
+        if not any(p.kind == inspect.Parameter.VAR_KEYWORD for p in params.values()):
+            values = {k: v for k, v in values.items() if k in allowed}
+    except (TypeError, ValueError):
+        pass
+    return ChatPermissions(**values)
+
+
 security_db = mongodb.aqua_advanced_security
 raid_windows: dict[int, deque[float]] = defaultdict(deque)
 
-_READONLY = ChatPermissions(can_send_messages=False)
-_NORMAL = ChatPermissions(
+_READONLY = _permissions(can_send_messages=False)
+_NORMAL = _permissions(
     can_send_messages=True,
     can_send_media_messages=True,
     can_send_polls=True,

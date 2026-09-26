@@ -18,6 +18,19 @@ from AquaVibe.core.runtime import app
 from AquaVibe.core.mongo import mongodb
 from AquaVibe.utils.admin_filters import admin_filter
 
+def _permissions(**values):
+    """Build ChatPermissions across Pyrogram/Pyrofork variants."""
+    import inspect
+    try:
+        params = inspect.signature(ChatPermissions).parameters
+        allowed = set(params)
+        if not any(p.kind == inspect.Parameter.VAR_KEYWORD for p in params.values()):
+            values = {k: v for k, v in values.items() if k in allowed}
+    except (TypeError, ValueError):
+        pass
+    return ChatPermissions(**values)
+
+
 settings_db = mongodb.group_management
 warnings_db = mongodb.group_warnings
 badwords_db = mongodb.group_badwords
@@ -26,8 +39,8 @@ _flood = defaultdict(deque)
 _captcha_tasks = {}
 _link_re = re.compile(r"(?:https?://|www\.|t\.me/|telegram\.me/|(?:^|\s)@\w{4,})", re.I)
 
-_MUTE = ChatPermissions(can_send_messages=False)
-_UNMUTE = ChatPermissions(
+_MUTE = _permissions(can_send_messages=False)
+_UNMUTE = _permissions(
     can_send_messages=True,
     can_send_media_messages=True,
     can_send_polls=True,
