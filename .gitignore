@@ -1,0 +1,12 @@
+*.env
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+cache/
+playback/
+backups/
+*.log
+ignored_errors.log
+*.session

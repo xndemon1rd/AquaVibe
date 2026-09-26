@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+cd /app
+export PYTHONPATH="/app${PYTHONPATH:+:${PYTHONPATH}}"
+test -f /app/config.py || { echo "ERROR: /app/config.py is missing" >&2; exit 1; }
+exec python3 -m AquaVibe

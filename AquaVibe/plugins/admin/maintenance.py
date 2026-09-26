@@ -1,0 +1,40 @@
+# Authored By Dev © 2025
+from pyrogram import filters
+from pyrogram.types import Message
+
+from AquaVibe.core.runtime import app
+from AquaVibe.misc import ADMINS
+from AquaVibe.utils.database import (
+    get_lang,
+    is_maintenance,
+    maintenance_off,
+    maintenance_on,
+)
+from strings import get_string
+
+
+@app.on_message(filters.command(["maintenance"]) & ADMINS)
+async def maintenance(client, message: Message):
+    try:
+        language = await get_lang(message.chat.id)
+        _ = get_string(language)
+    except Exception:
+        _ = get_string("en")
+    usage = _["maint_1"]
+    if len(message.command) != 2:
+        return await message.reply_text(usage)
+    state = message.text.split(None, 1)[1].strip().lower()
+    if state == "enable":
+        if await is_maintenance():
+            await message.reply_text(_["maint_4"])
+        else:
+            await maintenance_on()
+            await message.reply_text(_["maint_2"].format(app.mention))
+    elif state == "disable":
+        if await is_maintenance():
+            await maintenance_off()
+            await message.reply_text(_["maint_3"].format(app.mention))
+        else:
+            await message.reply_text(_["maint_5"])
+    else:
+        await message.reply_text(usage)

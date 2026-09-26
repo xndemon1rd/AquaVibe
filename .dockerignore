@@ -1,0 +1,25 @@
+.env
+.cache
+log.txt
+.DS_Store
+*.session
+raw_files/
+cache/
+downloads/
+__pycache__/
+*.session-journal
+repair_report.json
+.repair.lock
+
+# Runtime artifacts
+.git
+__pycache__
+*.pyc
+*.pyo
+runtime.log
+repair_report.json
+ai_repair_report.json
+self_healing_errors.jsonl
+
+# Secrets generated/downloaded at runtime
+AquaVibe/assets/cookies.txt

@@ -1,0 +1,14 @@
+AquaVibe styled buttons
+========================
+
+All existing InlineKeyboardButton call-sites now use the AquaVibe styled-button
+compatibility layer. Buttons are automatically assigned Telegram-native styles:
+- success (green): normal actions
+- primary (blue): navigation/info/support/open actions
+- danger (red): close/cancel/delete/remove/stop actions
+
+The compatibility layer uses Telegram's native MTProto KeyboardButtonStyle when
+supported by the installed Pyrofork schema, and gracefully falls back to normal
+buttons on older schemas.
+
+Telegram documents these native styles as primary, success and danger.
