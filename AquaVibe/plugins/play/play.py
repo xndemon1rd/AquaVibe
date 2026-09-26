@@ -17,7 +17,7 @@ from AquaVibe.core.runtime import Apple, Spotify, Telegram, AlternativeMedia, ap
 
 # TEMP ROUTING DIAGNOSTIC
 @app.on_message(filters.command("playtest") & ~BANNED_USERS, group=999)
-async def _playtest_handler(client, message, _):
+async def _playtest_handler(client, message):
     await message.reply_text("✅ PLAY ROUTING WORKS")
 
 from AquaVibe.core.call import StreamController
