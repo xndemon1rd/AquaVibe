@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+cd /app
+export PYTHONPATH="/app${PYTHONPATH:+:${PYTHONPATH}}"
+test -f /app/config.py || { echo "ERROR: /app/config.py is missing" >&2; exit 1; }
+
+if [ -n "${COOKIE_DATA_B64:-}" ]; then
+    mkdir -p /app/AquaVibe/assets
+    printf '%s' "$COOKIE_DATA_B64" | base64 -d > /app/AquaVibe/assets/cookies.txt
+    chmod 600 /app/AquaVibe/assets/cookies.txt
+    echo "YouTube cookies loaded."
+fi
+
+node /opt/bgutil-ytdlp-pot-provider/server/build/main.js --port 4416 &
+BGUTIL_PID=$!
+trap 'kill "$BGUTIL_PID" 2>/dev/null || true' EXIT TERM INT
+
+# Wait (max ~20s) for the PO-token server so the first /play doesn't race it.
+for _ in $(seq 1 20); do
+    if curl -fsS -o /dev/null "http://127.0.0.1:4416/ping"; then
+        echo "bgutil PO-token server ready."
+        break
+    fi
+    sleep 1
+done
+
+# Log which JS runtime yt-dlp will use (visible in Railway logs).
+python3 - <<'PY' || true
+import shutil
+print("node:", shutil.which("node"))
+try:
+    import yt_dlp_ejs; print("yt-dlp-ejs: OK")
+except Exception as e:
+    print("yt-dlp-ejs MISSING:", e)
+PY
+
+exec python3 -m AquaVibe
