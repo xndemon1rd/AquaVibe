@@ -215,7 +215,36 @@ async def session_gen_cancel_command(client, message: Message):
         await message.reply_text("No active session generator.")
 
 
-@app.on_message(filters.private & filters.text & ~filters.command("string") & ~filters.command("cancel"))
+def _has_active_session(_, __, message) -> bool:
+    """Match only while the user is mid-way through the generator.
+
+    Without this the handler claimed EVERY private text message in group 0,
+    and Pyrogram stops at the first matching handler per group, so every
+    command registered after this module (/speedtest, /stats, /stickerid,
+    /stdl, /packkang, /tgm, /telegraph, /upscale, /getdraw, /extract,
+    /waifu) never ran in private chat.
+    """
+    user = message.from_user
+    if not user:
+        return False
+    state = _SESSIONS.get(user.id)
+    if not state or state.get("step") == "backend":
+        return False
+    text = (message.text or "").strip()
+    if text.startswith("/"):
+        # Only /skip belongs to the generator; other commands keep working.
+        return text.split()[0].split("@")[0].lower() == "/skip"
+    return True
+
+
+_active_session_filter = filters.create(_has_active_session)
+
+
+@app.on_message(
+    filters.private & filters.text
+    & ~filters.command("string") & ~filters.command("cancel")
+    & _active_session_filter
+)
 async def session_generator_input(client, message: Message):
     user_id = message.from_user.id
     state = _SESSIONS.get(user_id)

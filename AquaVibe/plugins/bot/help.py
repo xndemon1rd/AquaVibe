@@ -63,20 +63,20 @@ CATEGORY_COMMANDS = {
     },
     "ai": {"ai", "chat", "cimage", "imposter", "upscale", "voices", "tts", "remember", "forget"},
     "tools": {
-        "ping", "stats", "speedtest", "spt", "bug", "lang", "setlang", "font", "fonts",
+        "ping", "stats", "speedtest", "spt", "bug", "lang", "setlang", "font", "font",
         "encode", "decode", "short", "unshort", "qr", "rmbg", "stickerid", "string", "pypi",
         "domain", "getdraw", "check", "ip", "weather", "telegraph", "tgm", "write", "extract",
         "remind", "reminder", "remindme", "poll", "day", "sg", "stdl", "q", "kang", "packkang",
     },
     "profile": {
-        "profile", "setphoto", "setbanner",
+        "setphoto", "setbanner1", "setbanner2",
         "banner", "id", "info", "user",
         "userinfo", "groupinfo", "level", "levels", "mylevel", "rank", "rep", "reputation",
-        "leaderboard", "top", "ranking", "rankings", "afk", "membership",
+        "leaderboard", "top", "ranking", "rankings", "afk",
     },
     "economy": {
-        "balance", "bal", "daily", "weekly", "wallet", "coins", "economy", "give", "toprich",
-        "rich", "shop", "store", "jackpot", "vip", "rob", "checkin",
+        "balance", "bal", "daily", "give", "toprich",
+        "rich", "jackpot", "vip", "rob", "checkin",
     },
     "anime": {
         # search + images
@@ -101,11 +101,10 @@ CATEGORY_COMMANDS = {
         "ban", "unban", "tban", "dban", "sban", "kick", "kickme", "mute", "unmute", "tmute",
         "warn", "warnings", "unwarn", "clearwarnings", "setwarnlimit", "promote", "fullpromote",
         "demote", "tempadmin", "purge", "spurge", "purgefrom", "deleteall", "del", "pin",
-        "unpin", "unpinall", "muteall", "banall", "report", "zombies",
-        "hide", "tagall",
+        "unpin", "unpinall", "muteall", "banall", "report", "zombies", "tagall",
     },
     "group": {
-        "settings", "groupdata", "gstats", "staff", "admins", "auth", "unauth", "authlist",
+        "settings", "groupdata", "staff", "admins", "auth", "unauth", "authlist",
         "authusers", "setphoto", "removephoto", "settitle", "setdiscription", "rules", "setrules", "setwelcome", "setgoodbye", "goodbye", "antilink",
         "addbadword", "removebadword", "badwords", "setfloodlimit", "flood", "lock", "unlock",
         "captcha", "raidmode", "raidstatus", "protect", "cleanup", "link", "givelink",
@@ -374,7 +373,7 @@ class _Text:
 # ─────────────────────────── catalogue data ───────────────────────────
 _FIRST = [
     "play", "vplay", "pause", "resume", "skip", "stop", "end", "queue", "player", "loop",
-    "shuffle", "seek", "lyrics", "ai", "cimage", "ping", "stats", "profile", "id", "info",
+    "shuffle", "seek", "lyrics", "ai", "cimage", "ping", "stats", "id", "info",
     "daily", "balance", "bal", "ban", "mute", "warn", "kick", "promote", "settings",
     "rps", "quiz", "wordle", "chess", "uno",
     "anime", "asearch", "waifu",

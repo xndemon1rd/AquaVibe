@@ -129,7 +129,6 @@ COMMAND_HELP = {
     "mmf":       ("Put meme text on an image.", "/mmf <top text>;<bottom text>", "/mmf When it works;When it doesn't", EVERYONE, "Reply to a photo first."),
 
     # ───────────── profile ─────────────
-    "profile":          ("Show your profile card.", "/profile", "", EVERYONE, ""),
     "banner":           ("Show a bot banner.", "/banner [1 | 2]", "/banner 2", EVERYONE, ""),
     "setbanner1":       ("Save banner slot 1.", "/setbanner1", "", OWNER, "Reply to an image first."),
     "setbanner2":       ("Save banner slot 2.", "/setbanner2", "", OWNER, "Reply to an image first."),
@@ -148,22 +147,14 @@ COMMAND_HELP = {
     "rep":              ("Give reputation to a member.", "/rep", "", EVERYONE_GRP, "Reply to the member first."),
     "reputation":       ("Give reputation to a member.", "/reputation", "", EVERYONE_GRP, "Reply to the member first."),
     "afk":              ("Mark yourself away.", "/afk [reason]", "/afk Back in an hour", EVERYONE_GRP, "The bot tells people who mention you."),
-    "membership":       ("Show your membership status.", "/membership", "", EVERYONE, ""),
-    "hide":             ("Hide your profile details.", "/hide", "", EVERYONE, ""),
 
     # ───────────── economy ─────────────
     "balance": ("Show your coin balance.", "/balance", "", EVERYONE_GRP, ""),
     "bal":     ("Show your coin balance.", "/bal", "", EVERYONE_GRP, ""),
-    "wallet":  ("Show your coin balance.", "/wallet", "", EVERYONE, ""),
-    "coins":   ("Show your coin balance.", "/coins", "", EVERYONE, ""),
     "daily":   ("Claim your daily coins.", "/daily", "", EVERYONE_GRP, "Once every 24 hours."),
-    "weekly":  ("Claim your weekly coins.", "/weekly", "", EVERYONE, "Once every 7 days."),
-    "economy": ("Show how the coin system works.", "/economy", "", EVERYONE, ""),
     "give":    ("Send coins to another member.", "/give <amount>", "/give 250", EVERYONE_GRP, "Reply to the member first."),
     "toprich": ("Show the richest members.", "/toprich", "", EVERYONE_GRP, ""),
     "rich":    ("Show the richest members.", "/rich", "", EVERYONE_GRP, ""),
-    "shop":    ("Browse items you can buy with coins.", "/shop", "", EVERYONE, ""),
-    "store":   ("Browse items you can buy with coins.", "/store", "", EVERYONE, ""),
     "jackpot": ("Spin the jackpot slot machine.", "/jackpot", "", EVERYONE, ""),
     "vip":     ("Show VIP plans and perks.", "/vip", "", EVERYONE, ""),
 

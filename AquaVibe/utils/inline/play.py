@@ -134,23 +134,3 @@ def slider_markup(_, videoid, user_id, query, query_type, channel, fplay, mode="
             ),
         ],
     ]
-
-
-def aqua_search_markup(token, user_id, page, total, video, channel, fplay, results):
-    start=page*3
-    items=results[start:start+3]
-    rows=[]
-    for offset,item in enumerate(items):
-        idx=start+offset
-        title=str(item.get("title") or "Unknown")[:38]
-        artist=str(item.get("artist") or "")[:22]
-        label=f"{idx+1} • {title}" + (f" — {artist}" if artist else "")
-        rows.append([InlineKeyboardButton(text=label, callback_data=f"AqPick {token}|{idx}|{user_id}|{'v' if video else 'a'}|{channel}|{fplay}")])
-    nav=[]
-    if page>0:
-        nav.append(InlineKeyboardButton(text="◀ Prev", callback_data=f"AqPage {token}|{page-1}|{user_id}"))
-    if start+3<total:
-        nav.append(InlineKeyboardButton(text="Next ▶", callback_data=f"AqPage {token}|{page+1}|{user_id}"))
-    if nav: rows.append(nav)
-    rows.append([InlineKeyboardButton(text="✕ Close", callback_data=f"forceclose {token}|{user_id}")])
-    return rows

@@ -23,7 +23,6 @@ commands = {
     "nope": {"emoji": "👎", "text": "said nope"},
     "cuddle": {"emoji": "🤗", "text": "cuddled"},
     "feed": {"emoji": "🍴", "text": "fed"},
-    "bored": {"emoji": "😴", "text": "was bored"},
     "nom": {"emoji": "😋", "text": "nommed"},
     "yawn": {"emoji": "😪", "text": "yawned"},
     "facepalm": {"emoji": "🤦", "text": "facepalmed"},
@@ -68,14 +67,14 @@ async def animation_command(client: Client, message: Message):
     if not gif_url:
         return await message.reply_text("❌ Couldn't fetch the animation. Please try again later.")
 
-    sender_name = md_escape(message.from_user.first_name)
-    sender = f"[{sender_name}](tg://user?id={message.from_user.id})"
+    def _mention(user):
+        if user is None:  # anonymous admin / channel post
+            return "Someone"
+        return f"[{md_escape(user.first_name or 'User')}](tg://user?id={user.id})"
 
-    if message.reply_to_message:
-        target_name = md_escape(message.reply_to_message.from_user.first_name)
-        target = f"[{target_name}](tg://user?id={message.reply_to_message.from_user.id})"
-    else:
-        target = sender
+    sender = _mention(message.from_user)
+    reply = message.reply_to_message
+    target = _mention(reply.from_user) if reply else sender
 
     action_text = commands[command]['text']
     emoji = commands[command]['emoji']

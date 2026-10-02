@@ -22,6 +22,7 @@ from AquaVibe.utils.database import (
     get_active_chats,
     get_assistant,
     get_lang,
+    get_upvote_count,
     is_active_chat,
     is_music_playing,
     music_off,
@@ -81,9 +82,33 @@ async def unban_assistant(_, callback: CallbackQuery):
         )
 
 
+# Buttons anybody in the chat may press; everything else needs the same rights
+# as the matching /pause /skip /stop ... commands (admin / auth user / playmode).
+_PUBLIC_PLAYER_ACTIONS = {"Queue", "Lyrics", "PHelp"}
+
+
 @app.on_callback_query(filters.regex("stream_admin") & ~BANNED_USERS)
+async def manage_callback(client, callback: CallbackQuery):
+    try:
+        action = callback.data.strip().split(None, 1)[1].split("|", 1)[0]
+    except Exception:
+        return await callback.answer()
+    if action in _PUBLIC_PLAYER_ACTIONS:
+        return await _player_buttons_public(client, callback)
+    return await _player_buttons_admin(client, callback)
+
+
 @languageCB
-async def manage_callback(client, callback: CallbackQuery, _):
+async def _player_buttons_public(client, callback: CallbackQuery, _):
+    return await _manage_callback_body(client, callback, _)
+
+
+@ActualAdminCB
+async def _player_buttons_admin(client, callback: CallbackQuery, _):
+    return await _manage_callback_body(client, callback, _)
+
+
+async def _manage_callback_body(client, callback: CallbackQuery, _):
     data = callback.data.strip().split(None, 1)[1]
     command, chat_info = data.split("|", 1)
     chat_id, counter = parse_chat_info(chat_info)
@@ -375,6 +400,44 @@ async def handle_seek(callback: CallbackQuery, _, chat_id: int, command: str, us
         db[chat_id][0]["played"] += duration_to_skip
     seek_message = _["admin_25"].format(seconds_to_min(to_seek))
     await mystic.edit_text(f"{seek_message}\n\nᴄʜᴀɴɢᴇs ᴅᴏɴᴇ ʙʏ : {user_mention} !")
+
+
+_VOTERS: dict = {}
+_VOTE_ACTIONS = {"Pause", "Resume", "Stop", "End", "Loop", "Shuffle", "Skip", "Replay"}
+
+
+@app.on_callback_query(filters.regex(r"^ADMIN\s+UpVote\|") & ~BANNED_USERS)
+@languageCB
+async def upvote_callback(client, callback: CallbackQuery, _):
+    """Vote button sent when a non-admin uses a player command in vote mode."""
+    try:
+        raw = callback.data.strip().split(None, 1)[1].split("|", 1)[1]
+        chat_part, mode = raw.split("_", 1)
+        chat_id = int(chat_part)
+    except Exception:
+        return await callback.answer("Invalid vote button.", show_alert=True)
+    if not await is_active_chat(chat_id):
+        return await callback.answer(_["general_5"], show_alert=True)
+    needed = await get_upvote_count(chat_id)
+    key = (chat_id, callback.message.id)
+    voters = _VOTERS.setdefault(key, set())
+    if callback.from_user.id in voters:
+        return await callback.answer("You already voted.", show_alert=True)
+    voters.add(callback.from_user.id)
+    if len(voters) < needed:
+        return await callback.answer(f"Vote added ({len(voters)}/{needed}).", show_alert=True)
+    _VOTERS.pop(key, None)
+    config.confirmer.get(chat_id, {}).pop(callback.message.id, None)
+    if mode not in _VOTE_ACTIONS:
+        return await callback.answer("Vote passed, but this action needs an admin.", show_alert=True)
+    callback.data = f"stream_admin {mode}|{chat_id}"
+    try:
+        await _manage_callback_body(client, callback, _)
+    finally:
+        try:
+            await callback.message.delete()
+        except Exception:
+            pass
 
 
 @app.on_callback_query(filters.regex("close") & ~BANNED_USERS)

@@ -2,11 +2,8 @@
 import asyncio
 from datetime import datetime
 from pyrogram import filters
-from AquaVibe.core.runtime import app
-from AquaVibe.core.userbot import Userbot
+from AquaVibe.core.runtime import app, userbot
 from config import OWNER_ID
-
-userbot = Userbot()
 
 BOT_LIST = [
     "TuneviaBot",
@@ -23,8 +20,12 @@ async def check_bots_command(client, message):
     if message.from_user.id != OWNER_ID:
         return await message.reply_text("🚫 You are not authorized to use this command.")
 
+    if userbot.one is None:
+        return await message.reply_text("❌ No assistant account is configured.")
+    started_here = False
     if not userbot.one.is_connected:
         await userbot.one.start()
+        started_here = True
 
     processing_msg = await message.reply_photo(
         photo="https://graph.org/file/e6b215db83839e8edf831.jpg",
@@ -43,7 +44,8 @@ async def check_bots_command(client, message):
             await asyncio.sleep(3)
             
             async for bot_message in userbot.one.get_chat_history(bot.id, limit=1):
-                status = "ᴏɴʟɪɴᴇ ✨" if bot_message.from_user.id == bot.id else "ᴏғғʟɪɴᴇ ❄"
+                sender = bot_message.from_user
+                status = "ᴏɴʟɪɴᴇ ✨" if sender and sender.id == bot.id else "ᴏғғʟɪɴᴇ ❄"
                 response += f"╭⎋ {bot.mention}\n╰⊚ **sᴛᴀᴛᴜs: {status}**\n\n"
         except Exception:
             response += f"╭⎋ {bot_username}\n╰⊚ **sᴛᴀᴛᴜs: ᴇʀʀᴏʀ ❌**\n\n"
@@ -51,5 +53,5 @@ async def check_bots_command(client, message):
     last_checked_time = start_time.strftime("%Y-%m-%d")
     await processing_msg.edit_caption(f"{response}⏲️ ʟᴀsᴛ ᴄʜᴇᴄᴋ: {last_checked_time}")
 
-    if userbot.one.is_connected:
+    if started_here and userbot.one.is_connected:
         await userbot.one.stop()

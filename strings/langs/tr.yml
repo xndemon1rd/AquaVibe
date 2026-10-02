@@ -335,3 +335,5 @@ gban_9 : "» {0} için global ban kaldırıldı.\n\n{1} sohbette engeli kaldır�
 gban_10 : "» Bottan global olarak engellenmiş kullanıcı yok."
 gban_11 : "» Global olarak engellenmiş kullanıcılar listesi getiriliyor..."
 gban_12 : "🙂 <b>Global olarak engellenmiş kullanıcılar :</b>\n\n"
+H_B_30 : "📚 Tüm Komutlar"
+vc_ended : "Sesli sohbet sonlandırıldı 💔\nSonlandıran: {0}"
