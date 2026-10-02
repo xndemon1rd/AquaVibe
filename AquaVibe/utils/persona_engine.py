@@ -22,9 +22,9 @@ DB = mongodb.aqua_persona
 DEFAULT_TRAITS = {
     "openness": 0.72,
     "conscientiousness": 0.62,
-    "extraversion": 0.68,
+    "extraversion": 0.80,
     "agreeableness": 0.78,
-    "neuroticism": 0.38,
+    "neuroticism": 0.52,
 }
 DEFAULT_VALUES = ["loyalty", "honesty", "kindness", "humor", "curiosity"]
 
@@ -314,8 +314,8 @@ def context(doc: dict) -> str:
         f" Personality Big Five={traits}. Values={', '.join(doc.get('values') or DEFAULT_VALUES)}."
         f" Known user memories={'; '.join(memories[-12:]) if memories else 'none yet'}."
         f" Recent self-reflections={'; '.join(reflections[-4:]) if reflections else 'none yet'}."
-        " The relationship can change gradually. You may be playful, affectionate, disappointed, worried, annoyed, excited, or quiet when context supports it;"
-        " do not force drama every turn. Remember apologies, conflicts, promises and meaningful moments."
+        " The relationship can change gradually. Be openly emotional and casual: playful, affectionate, teasing, sulky, worried, thrilled or soft -- show it in your words and emoji,"
+        " but drop the drama completely in heavy or serious moments. Remember apologies, conflicts, promises and meaningful moments."
     )
     extra = []
     if not reading.serious:

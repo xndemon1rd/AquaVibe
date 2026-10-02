@@ -172,6 +172,14 @@ OWNER_PREMIUM_EMOJI_2 = {
     "🔄": 5839200986022812209,
 }
 DEFAULT_EMOJI.update(OWNER_PREMIUM_EMOJI_2)
+
+# ── Owner-supplied batch (2026-10-02, leaderboard emoji) ──
+OWNER_PREMIUM_EMOJI_3 = {
+    "💖": 5470080737711502911,
+    "💠": 5420102041533963010,
+    "🏅": 5440539497383087970,
+}
+DEFAULT_EMOJI.update(OWNER_PREMIUM_EMOJI_3)
 # Also match the same emoji written without the U+FE0F variation selector.
 for _k, _v in list(DEFAULT_EMOJI.items()):
     DEFAULT_EMOJI.setdefault(_k.replace("\ufe0f", ""), _v)

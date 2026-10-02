@@ -130,8 +130,6 @@ COMMAND_HELP = {
 
     # ───────────── profile ─────────────
     "profile":          ("Show your profile card.", "/profile", "", EVERYONE, ""),
-    "setprofilephoto":  ("Set the photo on your profile card.", "/setprofilephoto", "", EVERYONE, "Reply to a photo first."),
-    "setprofilebanner": ("Set the banner on your profile card.", "/setprofilebanner", "", EVERYONE, "Reply to an image first."),
     "banner":           ("Show a bot banner.", "/banner [1 | 2]", "/banner 2", EVERYONE, ""),
     "setbanner1":       ("Save banner slot 1.", "/setbanner1", "", OWNER, "Reply to an image first."),
     "setbanner2":       ("Save banner slot 2.", "/setbanner2", "", OWNER, "Reply to an image first."),
@@ -151,7 +149,6 @@ COMMAND_HELP = {
     "reputation":       ("Give reputation to a member.", "/reputation", "", EVERYONE_GRP, "Reply to the member first."),
     "afk":              ("Mark yourself away.", "/afk [reason]", "/afk Back in an hour", EVERYONE_GRP, "The bot tells people who mention you."),
     "membership":       ("Show your membership status.", "/membership", "", EVERYONE, ""),
-    "refer":            ("Get your personal referral link.", "/refer", "", EVERYONE, ""),
     "hide":             ("Hide your profile details.", "/hide", "", EVERYONE, ""),
 
     # ───────────── economy ─────────────

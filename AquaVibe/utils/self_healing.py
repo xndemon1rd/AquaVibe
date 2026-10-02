@@ -57,7 +57,7 @@ _CODE_BUGS = (
     AttributeError, TypeError, KeyError, IndexError, NameError, UnboundLocalError,
     ValueError, ZeroDivisionError, AssertionError, UnicodeError, StopIteration,
 )
-_SKIP_DIRS = ("_disabled_plugins", "__pycache__", "AquaVibeBackup")
+_SKIP_DIRS = ("__pycache__", "AquaVibeBackup")
 _SELF = Path(__file__).resolve()
 
 _SEEN: dict[str, float] = {}          # fingerprint -> last analysed time

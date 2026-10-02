@@ -26,7 +26,6 @@ usersdb = mongodb.tgusersdb
 
 # Economy / monetization collections
 economydb = mongodb.trabelx_economy
-grouprefdb = mongodb.trabelx_group_referrals
 paymentdb = mongodb.trabelx_payments
 bannerdb = mongodb.trabelx_banners
 historydb = mongodb.trabelx_song_history
@@ -738,13 +737,9 @@ async def ensure_economy_user(user_id: int):
             "coins": 10_000_000 if uid == int(OWNER_ID) else 0,
             "daily_claim": None,
             "weekly_claim": None,
-            "referred_by": None,
             "vip_until": None,
             "membership_until": None,
             "membership_banner": None,
-            "profile_photo": None,
-            "profile_banner": None,
-            "custom_banners": [],
             "hide_coins": False,
             "hide_member": False,
             "hide_vip": False,
@@ -787,49 +782,6 @@ async def get_song_count(user_id: int) -> int:
     except Exception:
         rows = await get_song_history(user_id, 50)
         return len(rows)
-
-
-async def set_profile_photo(user_id: int, file_id: str | None):
-    await ensure_economy_user(user_id)
-    await economydb.update_one({"user_id": int(user_id)}, {"$set": {"profile_photo": file_id, "updated_at": datetime.now(timezone.utc)}})
-
-
-async def get_profile_photo(user_id: int):
-    data = await get_economy(user_id)
-    return data.get("profile_photo")
-
-
-async def set_profile_banner(user_id: int, file_id: str | None):
-    await ensure_economy_user(user_id)
-    await economydb.update_one({"user_id": int(user_id)}, {"$set": {"profile_banner": file_id, "updated_at": datetime.now(timezone.utc)}})
-
-
-async def get_profile_banner(user_id: int):
-    data = await get_economy(user_id)
-    return data.get("profile_banner")
-
-
-async def add_custom_banner(user_id: int, file_id: str) -> int:
-    await ensure_economy_user(user_id)
-    await economydb.update_one(
-        {"user_id": int(user_id)},
-        {"$push": {"custom_banners": file_id}, "$set": {"updated_at": datetime.now(timezone.utc)}},
-    )
-    return len(await get_custom_banners(user_id))
-
-
-async def get_custom_banners(user_id: int) -> list[str]:
-    data = await get_economy(user_id)
-    return list(data.get("custom_banners") or [])
-
-
-async def remove_custom_banner(user_id: int, file_id: str) -> bool:
-    await ensure_economy_user(user_id)
-    result = await economydb.update_one(
-        {"user_id": int(user_id)},
-        {"$pull": {"custom_banners": file_id}, "$set": {"updated_at": datetime.now(timezone.utc)}},
-    )
-    return bool(result.modified_count)
 
 
 async def get_profile_hides(user_id: int) -> dict:
@@ -922,20 +874,6 @@ async def force_remove_coins(user_id: int, amount: int, reason: str = "") -> int
     )
     return await get_coins(user_id)
 
-async def set_referrer(user_id: int, referrer_id: int) -> bool:
-    await ensure_economy_user(user_id)
-    if int(user_id) == int(referrer_id):
-        return False
-    result = await economydb.update_one(
-        {"user_id": int(user_id), "referred_by": None},
-        {"$set": {"referred_by": int(referrer_id), "updated_at": datetime.now(timezone.utc)}},
-    )
-    return result.modified_count > 0
-
-async def get_referrer(user_id: int):
-    data = await get_economy(user_id)
-    return data.get("referred_by")
-
 async def claim_daily_reward(user_id: int, amount: int = 100):
     await ensure_economy_user(user_id)
     now = datetime.now(timezone.utc)
@@ -1007,27 +945,6 @@ async def mark_payment_paid(payload: str, telegram_charge_id: str = ""):
         {"payload": payload},
         {"$set": {"status": "paid", "telegram_charge_id": telegram_charge_id, "paid_at": datetime.now(timezone.utc)}},
     )
-
-async def record_group_referral(chat_id: int, inviter_id: int, referred_user_id: int, reward: int = 1000) -> bool:
-    exists = await grouprefdb.find_one({"chat_id": int(chat_id)})
-    if exists:
-        return False
-    await grouprefdb.insert_one({
-        "chat_id": int(chat_id), "inviter_id": int(inviter_id),
-        "referred_user_id": int(referred_user_id), "reward": int(reward),
-        "active": True, "created_at": datetime.now(timezone.utc)
-    })
-    return True
-
-async def get_group_referral(chat_id: int):
-    return await grouprefdb.find_one({"chat_id": int(chat_id)})
-
-async def deactivate_group_referral(chat_id: int):
-    ref = await grouprefdb.find_one({"chat_id": int(chat_id), "active": True})
-    if not ref:
-        return None
-    await grouprefdb.update_one({"_id": ref["_id"]}, {"$set": {"active": False, "removed_at": datetime.now(timezone.utc)}})
-    return ref
 
 async def payment_already_processed(charge_id: str) -> bool:
     if not charge_id:
